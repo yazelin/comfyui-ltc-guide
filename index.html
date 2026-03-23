@@ -1,494 +1,227 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ComfyUI + LTX 2.3 完整教學 | AMD AI MAX+ 395</title>
-    <meta name="description" content="在 AMD Ryzen AI MAX+ 395 上使用 ComfyUI 和 LTX 2.3 生成 AI 影片的完整教學指南">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComfyUI + LTX 2.3 指南 | AMD AI MAX+ 395</title>
+  <meta name="description" content="AMD AI MAX+ 395 本地執行 ComfyUI + LTX 2.3 的精簡完整指南。">
+  <style>
+    :root { --bg:#fff; --fg:#111; --muted:#f3f4f6; --border:#d1d5db; --accent:#15803d; --space-3:0.75rem; --space-4:1rem; --space-6:1.5rem; --space-8:2rem; --radius:0.5rem; --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);background:var(--bg);color:var(--fg);line-height:1.6}
+    .container{width:min(100%,72rem);margin:0 auto;padding:0 var(--space-4)}
+    header{padding:var(--space-8) 0;border-bottom:1px solid var(--border)}
+    .hero-actions{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-6)}
+    .btn{display:inline-block;padding:0.7rem 1rem;border:1px solid #111;border-radius:var(--radius);text-decoration:none;color:#111;font-weight:700;transition:all .2s ease}
+    .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <span class="brand-icon">🎬</span>
-                <h1>ComfyUI + LTX 2.3</h1>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#intro">介紹</a></li>
-                <li><a href="#requirements">硬體</a></li>
-                <li><a href="#install">安裝</a></li>
-                <li><a href="#usage">使用</a></li>
-                <li><a href="#faq">FAQ</a></li>
-            </ul>
+  <a href="#main-content" class="skip-link">跳至主要內容</a>
+  <header>
+    <div class="container hero">
+      <p class="eyebrow">LTX 2.3 本地影片生成指南</p>
+      <h1>✅ AMD AI MAX+ 395 可以跑 LTX 2.3</h1>
+      <p class="subtitle">以 ComfyUI Desktop + AMD ROCm 路線，快速完成在地部署、生成與成本控管。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#install-steps">立即安裝</a>
+        <a class="btn" href="#quick-start">快速開始</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="section trust-bar" aria-labelledby="trust-title">
+      <div class="container">
+        <h2 id="trust-title">社群成功案例</h2>
+        <div class="cards cards-3">
+          <article class="card success-card">
+            <h3>AI MAX+ 395 / 64GB-64GB</h3>
+            <p>可穩定生成 5 秒影片，實測約 3-5 分鐘。</p>
+            <a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener noreferrer">Reddit 來源<span class="sr-only">（另開新視窗）</span></a>
+          </article>
+          <article class="card success-card">
+            <h3>Radeon 7800 XT</h3>
+            <p>ROCm 環境可跑 ComfyUI 工作流，適合桌機用戶。</p>
+            <a href="https://www.reddit.com/r/StableDiffusion/" target="_blank" rel="noopener noreferrer">Reddit 來源<span class="sr-only">（另開新視窗）</span></a>
+          </article>
+          <article class="card success-card">
+            <h3>Strix Halo / Ubuntu 24</h3>
+            <p>社群回報穩定，推論流程可長時間運行。</p>
+            <a href="https://www.reddit.com/r/Amd/" target="_blank" rel="noopener noreferrer">Reddit 來源<span class="sr-only">（另開新視窗）</span></a>
+          </article>
         </div>
-    </nav>
+      </div>
+    </section>
 
-    <header class="hero">
-        <div class="hero-bg"></div>
-        <div class="container">
-            <div class="hero-badge">AMD GPU 專用教學</div>
-            <h2 class="hero-title">在 AMD GPU 上生成 AI 影片</h2>
-            <p class="hero-subtitle">使用 ComfyUI + LTX 2.3 本地執行，免費無限生成</p>
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <div class="stat-value">~3 分鐘</div>
-                    <div class="stat-label">生成 5 秒影片</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">$0</div>
-                    <div class="stat-label">API 費用</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">128GB</div>
-                    <div class="stat-label">Unified Memory</div>
-                </div>
-            </div>
+    <section class="section" aria-labelledby="hardware-title">
+      <div class="container">
+        <h2 id="hardware-title">硬體需求</h2>
+        <div class="table-wrap">
+          <table>
+            <caption>AMD AI MAX+ 395 建議硬體與系統配置</caption>
+            <thead>
+              <tr>
+                <th scope="col">項目</th>
+                <th scope="col">需求</th>
+                <th scope="col">備註</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">CPU</th>
+                <td>AMD Ryzen AI MAX+ 395</td>
+                <td>16 核心 Zen 5</td>
+              </tr>
+              <tr>
+                <th scope="row">GPU</th>
+                <td>Radeon 8060S / ROCm 支援卡</td>
+                <td>建議更新至最新驅動</td>
+              </tr>
+              <tr>
+                <th scope="row">記憶體</th>
+                <td>128GB Unified Memory</td>
+                <td>必設 64GB/64GB</td>
+              </tr>
+              <tr>
+                <th scope="row">儲存空間</th>
+                <td>50GB+</td>
+                <td>模型與輸出影片</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-    </header>
+        <aside class="alert">
+          <strong>RAM 警告：</strong> BIOS 若仍是 96GB/32GB，LTX 2.3 常見 OOM；請改為 <strong>64GB/64GB</strong>。
+        </aside>
+      </div>
+    </section>
 
-    <main class="container">
-        <!-- 介紹 -->
-        <section id="intro" class="section fade-in">
-            <div class="section-header">
-                <h2>💡 為什麼選擇本地執行？</h2>
-                <p class="section-subtitle">告別 API 費用，完全掌控影片生成流程</p>
-            </div>
+    <section class="section" id="install-steps" aria-labelledby="install-title">
+      <div class="container">
+        <h2 id="install-title">4 步驟安裝（預估 25-40 分鐘）</h2>
+        <ol class="steps">
+          <li class="card">
+            <h3>步驟 1：安裝 AMD 驅動（5-10 分）</h3>
+            <p>下載並安裝官方 Adrenaline / PyTorch 驅動套件，完成後重啟。</p>
+            <p><a href="https://www.amd.com/en/resources/support-articles/release-notes/RN-AMDGPU-WINDOWS-PYTORCH-7-1-1.html" target="_blank" rel="noopener noreferrer">AMD Driver 連結<span class="sr-only">（另開新視窗）</span></a></p>
+          </li>
+          <li class="card">
+            <h3>步驟 2：安裝 Git（3-5 分）</h3>
+            <p>若尚未安裝，先裝 Git 以便拉取工作流與工具。</p>
+            <p><a href="https://git-scm.com/install/" target="_blank" rel="noopener noreferrer">Git 安裝頁<span class="sr-only">（另開新視窗）</span></a></p>
+          </li>
+          <li class="card">
+            <h3>步驟 3：安裝 ComfyUI Desktop（10-20 分）</h3>
+            <p>依官方 AMD/ROCm 指引安裝，首次啟動需下載必要元件。</p>
+            <p><a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank" rel="noopener noreferrer">ComfyUI 官方 Blog<span class="sr-only">（另開新視窗）</span></a></p>
+          </li>
+          <li class="card">
+            <h3>步驟 4：確認 ROCm 與記憶體配置（5 分）</h3>
+            <p>檢查 ROCm 文件對應與 BIOS 64GB/64GB 設定。</p>
+            <p><a href="https://rocm.docs.amd.com/" target="_blank" rel="noopener noreferrer">ROCm Docs<span class="sr-only">（另開新視窗）</span></a></p>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>節省成本</h3>
-                    <p>API 模式每次 $0.30，本地執行完全免費</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>隱私保護</h3>
-                    <p>所有資料在本地處理，不上傳雲端</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>完全掌控</h3>
-                    <p>自訂所有參數，精細調整生成品質</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>無限次數</h3>
-                    <p>想生成幾次就幾次，沒有quota限制</p>
-                </div>
-            </div>
-
-            <div class="success-section">
-                <h3>✅ 社群驗證成功</h3>
-                <div class="success-grid">
-                    <div class="success-card glass">
-                        <div class="success-badge">已驗證</div>
-                        <h4>AMD AI MAX+ 395</h4>
-                        <div class="success-specs">
-                            <span>64GB RAM</span>
-                            <span>•</span>
-                            <span>ROCm 7.1.1</span>
-                        </div>
-                        <p class="success-result">✅ ~3分鐘/5秒影片</p>
-                    </div>
-                    <div class="success-card glass">
-                        <div class="success-badge">已驗證</div>
-                        <h4>AMD 7800 XT</h4>
-                        <div class="success-specs">
-                            <span>16GB VRAM</span>
-                            <span>•</span>
-                            <span>ROCm 7.1</span>
-                        </div>
-                        <p class="success-result">✅ 穩定運行</p>
-                    </div>
-                    <div class="success-card glass">
-                        <div class="success-badge">已驗證</div>
-                        <h4>AMD Strix Halo</h4>
-                        <div class="success-specs">
-                            <span>Ubuntu 24</span>
-                            <span>•</span>
-                            <span>ROCm 7.9</span>
-                        </div>
-                        <p class="success-result">✅ stable as a rock</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 硬體需求 -->
-        <section id="requirements" class="section fade-in">
-            <div class="section-header">
-                <h2>💻 硬體需求</h2>
-                <p class="section-subtitle">AMD AI MAX+ 395 建議配置</p>
-            </div>
-
-            <div class="specs-card glass">
-                <table class="specs-table">
-                    <thead>
-                        <tr>
-                            <th>項目</th>
-                            <th>規格</th>
-                            <th>說明</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="spec-label">CPU</span></td>
-                            <td>AMD Ryzen AI MAX+ 395</td>
-                            <td class="spec-desc">16 Zen 5 核心</td>
-                        </tr>
-                        <tr>
-                            <td><span class="spec-label">GPU</span></td>
-                            <td>40 CU RDNA 3.5</td>
-                            <td class="spec-desc">Radeon 8060S integrated</td>
-                        </tr>
-                        <tr class="highlight-row">
-                            <td><span class="spec-label">記憶體</span></td>
-                            <td>128GB unified</td>
-                            <td class="spec-desc"><strong>⚠️ 設定 64GB/64GB</strong></td>
-                        </tr>
-                        <tr>
-                            <td><span class="spec-label">作業系統</span></td>
-                            <td>Windows 10/11</td>
-                            <td class="spec-desc">推薦 Windows 11</td>
-                        </tr>
-                        <tr>
-                            <td><span class="spec-label">儲存空間</span></td>
-                            <td>50GB+</td>
-                            <td class="spec-desc">模型 + 依賴 + 輸出</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="alert alert-warning">
-                <div class="alert-icon">⚠️</div>
-                <div class="alert-content">
-                    <h4>RAM 配置注意事項</h4>
-                    <p>必須在 BIOS 中設定為 <strong>64GB/64GB (CPU/GPU 均分)</strong></p>
-                    <p class="alert-sub">預設的 96GB/32GB 會導致 OOM 錯誤！</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 安裝步驟 -->
-        <section id="install" class="section fade-in">
-            <div class="section-header">
-                <h2>🛠️ 安裝步驟</h2>
-                <p class="section-subtitle">四步驟完成設定</p>
-            </div>
-
-            <div class="install-steps">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>安裝 AMD Adrenaline 驅動</h3>
-                        <ol>
-                            <li>前往 <a href="https://www.amd.com/en/resources/support-articles/release-notes/RN-AMDGPU-WINDOWS-PYTORCH-7-1-1.html" target="_blank">AMD 官方頁面</a></li>
-                            <li>下載最新版 Adrenaline 驅動</li>
-                            <li>安裝後<strong>重新啟動電腦</strong></li>
-                        </ol>
-                    </div>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>安裝 Git</h3>
-                        <p>如已安裝可跳過。</p>
-                        <ol>
-                            <li>前往 <a href="https://git-scm.com/install/" target="_blank">Git 官網</a></li>
-                            <li>下載 Windows 版本並安裝</li>
-                            <li>驗證：<code>git --version</code></li>
-                        </ol>
-                    </div>
-                </div>
-
-                <div class="step-card highlight">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>安裝 ComfyUI Desktop（核心）</h3>
-                        <div class="alert alert-info">
-                            <div class="alert-icon">✨</div>
-                            <div class="alert-content">
-                                <p>自動安裝 Python、ROCm 7.2.2、PyTorch，無需手動配置！</p>
-                            </div>
-                        </div>
-                        <ol>
-                            <li>前往 <a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank">ComfyUI 官方 Blog</a></li>
-                            <li>下載 Windows 版本</li>
-                            <li>執行安裝（全部預設選項）</li>
-                            <li class="note">⏱️ 首次啟動需 10-20 分鐘</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>調整記憶體分配</h3>
-                        <div class="alert alert-warning">
-                            <div class="alert-icon">⚠️</div>
-                            <div class="alert-content">
-                                <p><strong>必須設定！</strong>不設定會 OOM</p>
-                            </div>
-                        </div>
-                        <ol>
-                            <li>重啟進入 BIOS（通常按 Delete 或 F2）</li>
-                            <li>找到 Memory Configuration</li>
-                            <li>設定為 <strong>64GB/64GB</strong></li>
-                            <li>儲存並重啟</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 使用教學 -->
-        <section id="usage" class="section fade-in">
-            <div class="section-header">
-                <h2>🎨 使用教學</h2>
-                <p class="section-subtitle">節點式工作流程快速上手</p>
-            </div>
-
-            <div class="usage-card glass">
-                <h3>快速開始：使用預設範本</h3>
-                <div class="quick-steps">
-                    <div class="quick-step">
-                        <div class="quick-step-number">1</div>
-                        <p>載入範本：<strong>File → Load → Templates → LTX Video</strong></p>
-                    </div>
-                    <div class="quick-step">
-                        <div class="quick-step-number">2</div>
-                        <p>找到 "Text Prompt" 節點，輸入描述</p>
-                        <div class="code-example">一隻可愛的橘貓在陽光下打哈欠</div>
-                    </div>
-                    <div class="quick-step">
-                        <div class="quick-step-number">3</div>
-                        <p>設定參數：Duration <code>5秒</code>、Resolution <code>1920x1080</code></p>
-                    </div>
-                    <div class="quick-step">
-                        <div class="quick-step-number">4</div>
-                        <p>點擊 <strong class="primary-text">Queue Prompt</strong> 開始生成</p>
-                    </div>
-                    <div class="quick-step">
-                        <div class="quick-step-number">5</div>
-                        <p>等待 3-5 分鐘，完成後在 <code>ComfyUI\output\</code> 查看</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tips-grid">
-                <div class="tip-card">
-                    <h4>🐌 生成太慢？</h4>
-                    <ul>
-                        <li>降低解析度 → 1280x720</li>
-                        <li>縮短時長 → 3 秒</li>
-                        <li>減少步數 → Steps 20</li>
-                    </ul>
-                </div>
-                <div class="tip-card">
-                    <h4>💥 遇到 OOM？</h4>
-                    <ul>
-                        <li>確認 RAM 64GB/64GB</li>
-                        <li>關閉其他程式</li>
-                        <li>降低解析度或時長</li>
-                    </ul>
-                </div>
-                <div class="tip-card">
-                    <h4>✨ 想要更高品質？</h4>
-                    <ul>
-                        <li>增加步數 → Steps 40-50</li>
-                        <li>調整 CFG Scale → 7-9</li>
-                        <li>寫更詳細的 prompt</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ -->
-        <section id="faq" class="section fade-in">
-            <div class="section-header">
-                <h2>❓ 常見問題</h2>
-                <p class="section-subtitle">快速找到解答</p>
-            </div>
-
-            <div class="faq-grid">
-                <details class="faq-item">
-                    <summary>首次啟動很慢，正常嗎？</summary>
-                    <div class="faq-answer">
-                        <p>✅ 正常。首次啟動需載入模型和初始化 ROCm，約 1-3 分鐘。之後啟動會快很多（約 30 秒）。</p>
-                    </div>
-                </details>
-
-                <details class="faq-item">
-                    <summary>出現 "CUDA out of memory" 錯誤？</summary>
-                    <div class="faq-answer">
-                        <ol>
-                            <li>確認 RAM 配置為 64GB/64GB（不是 96GB/32GB）</li>
-                            <li>降低解析度或影片長度</li>
-                            <li>關閉其他占用記憶體的程式</li>
-                        </ol>
-                    </div>
-                </details>
-
-                <details class="faq-item">
-                    <summary>生成速度比預期慢？</summary>
-                    <div class="faq-answer">
-                        <p>AMD AI MAX+ 395 預期約 3-5 分鐘生成 5 秒影片。如果更慢：</p>
-                        <ul>
-                            <li>檢查是否有其他程式占用 GPU</li>
-                            <li>確認驅動已正確安裝</li>
-                            <li>查看工作管理員 GPU 使用率</li>
-                        </ul>
-                    </div>
-                </details>
-
-                <details class="faq-item">
-                    <summary>可以生成超過 5 秒的影片嗎？</summary>
-                    <div class="faq-answer">
-                        <p>可以，但：</p>
-                        <ul>
-                            <li>越長越耗時（10 秒約 6-8 分鐘）</li>
-                            <li>越長越容易 OOM（建議不超過 10 秒）</li>
-                            <li>可分段生成再用影片編輯軟體合併</li>
-                        </ul>
-                    </div>
-                </details>
-
-                <details class="faq-item">
-                    <summary>我的 AMD GPU 不是 AI MAX+ 395，能用嗎？</summary>
-                    <div class="faq-answer">
-                        <p>✅ 可以！已驗證支援：</p>
-                        <ul>
-                            <li>AMD 7900 XTX (24GB VRAM)</li>
-                            <li>AMD 7800 XT (16GB VRAM)</li>
-                            <li>AMD Strix Halo 系列</li>
-                        </ul>
-                        <p>更多請參考 <a href="https://rocm.docs.amd.com/" target="_blank">ROCm 支援清單</a></p>
-                    </div>
-                </details>
-
-                <details class="faq-item">
-                    <summary>本地執行 vs. API，哪個好？</summary>
-                    <div class="faq-answer">
-                        <table class="comparison-table">
-                            <tr>
-                                <th></th>
-                                <th>本地執行</th>
-                                <th>API 模式</th>
-                            </tr>
-                            <tr>
-                                <td>費用</td>
-                                <td class="positive">✅ 免費</td>
-                                <td>$0.30/影片</td>
-                            </tr>
-                            <tr>
-                                <td>速度</td>
-                                <td>~3-5分鐘</td>
-                                <td class="positive">✅ ~2分鐘</td>
-                            </tr>
-                            <tr>
-                                <td>隱私</td>
-                                <td class="positive">✅ 完全本地</td>
-                                <td>上傳雲端</td>
-                            </tr>
-                            <tr>
-                                <td>設定</td>
-                                <td>需學習</td>
-                                <td class="positive">✅ 簡單</td>
-                            </tr>
-                        </table>
-                    </div>
-                </details>
-            </div>
-        </section>
-
-        <!-- 資源 -->
-        <section id="resources" class="section fade-in">
-            <div class="section-header">
-                <h2>📚 參考資源</h2>
-                <p class="section-subtitle">官方文檔與社群案例</p>
-            </div>
-
-            <div class="resource-grid">
-                <a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank" class="resource-card glass">
-                    <div class="resource-icon">📖</div>
-                    <h4>ComfyUI Desktop 官方 Blog</h4>
-                    <p>官方安裝教學與更新</p>
-                </a>
-                <a href="https://rocm.docs.amd.com/projects/ai-developer-hub/en/latest/notebooks/inference/t2v_comfyui_radeon.html" target="_blank" class="resource-card glass">
-                    <div class="resource-icon">🔧</div>
-                    <h4>AMD ROCm 官方教程</h4>
-                    <p>Text-to-Video 完整指南</p>
-                </a>
-                <a href="https://github.com/Lightricks/LTX-2" target="_blank" class="resource-card glass">
-                    <div class="resource-icon">💻</div>
-                    <h4>LTX 模型 GitHub</h4>
-                    <p>模型源碼與技術文檔</p>
-                </a>
-                <a href="https://github.com/yazelin/ltx-cli" target="_blank" class="resource-card glass">
-                    <div class="resource-icon">⚡</div>
-                    <h4>LTX CLI 工具</h4>
-                    <p>命令列介面替代方案</p>
-                </a>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>本教學由 <a href="https://github.com/yazelin" target="_blank">@yazelin</a> 製作</p>
-                <p>最後更新：2026-03-23</p>
-            </div>
-            <div class="footer-links">
-                <a href="https://github.com/yazelin/comfyui-ltc-guide/issues" target="_blank">回報問題</a>
-                <span>•</span>
-                <a href="https://github.com/yazelin/comfyui-ltc-guide" target="_blank">GitHub</a>
-            </div>
+    <section class="section" id="quick-start" aria-labelledby="quick-title">
+      <div class="container">
+        <h2 id="quick-title">Quick Start Workflow</h2>
+        <div class="card workflow">
+          <ol>
+            <li>開啟 ComfyUI Desktop，載入 LTX 2.3 範本工作流。</li>
+            <li>填入 Prompt、長度（建議先 3-5 秒）、解析度（先 720p）。</li>
+            <li>按 Queue Prompt 執行，觀察 VRAM/RAM 使用情況。</li>
+            <li>輸出影片位於 ComfyUI output 目錄，確認結果後再逐步提高品質。</li>
+          </ol>
         </div>
-    </footer>
+      </div>
+    </section>
 
-    <script>
-        // Fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <h2 id="faq-title">FAQ</h2>
+        <div class="faq-list">
+          <details class="card">
+            <summary>1) 首次啟動很慢，正常嗎？</summary>
+            <p>正常，首次會初始化環境與模型，後續啟動時間會明顯下降。</p>
+          </details>
+          <details class="card">
+            <summary>2) OOM 要先檢查什麼？</summary>
+            <p>先確認 BIOS 為 64GB/64GB，再降低影片長度與解析度測試。</p>
+          </details>
+          <details class="card">
+            <summary>3) 非 AI MAX+ 395 也能用嗎？</summary>
+            <p>可，需確認你的 AMD GPU 在 ROCm 支援範圍內並使用對應驅動。</p>
+          </details>
+          <details class="card">
+            <summary>4) 為何建議先 720p、3-5 秒？</summary>
+            <p>可先驗證流程與穩定性，再逐步提高品質，降低排錯成本。</p>
+          </details>
+          <details class="card">
+            <summary>5) 還有 CLI 路線嗎？</summary>
+            <p>可以，參考 ltx-cli 專案做批次化或腳本化流程。</p>
+          </details>
+        </div>
+      </div>
+    </section>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+    <section class="section" aria-labelledby="cost-title">
+      <div class="container">
+        <h2 id="cost-title">成本比較</h2>
+        <div class="table-wrap">
+          <table>
+            <caption>本地執行 vs API 成本對照（示意）</caption>
+            <thead>
+              <tr>
+                <th scope="col">項目</th>
+                <th scope="col">本地（ComfyUI + LTX）</th>
+                <th scope="col">雲端 API</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">單次影片成本</th>
+                <td>約 $0（電費另計）</td>
+                <td>約 $0.30 / 5 秒</td>
+              </tr>
+              <tr>
+                <th scope="row">100 支影片</th>
+                <td>約 $0 + 電費</td>
+                <td>約 $30</td>
+              </tr>
+              <tr>
+                <th scope="row">隱私與資料控制</th>
+                <td>全在地</td>
+                <td>依平台政策</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-            observer.observe(el);
-        });
+    <section class="section final-cta" aria-labelledby="cta-title">
+      <div class="container card">
+        <h2 id="cta-title">準備好開始了嗎？</h2>
+        <p>先完成 4 步驟安裝，再用 Quick Start 工作流跑出第一支影片。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#install-steps">開始部署</a>
+          <a class="btn" href="#faq">查看 FAQ</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        // Smooth scroll for nav links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
+  <footer>
+    <div class="container footer-grid">
+      <a href="https://github.com/yazelin/ltx-cli" target="_blank" rel="noopener noreferrer">ltx-cli Repo<span class="sr-only">（另開新視窗）</span></a>
+      <a href="https://github.com/yazelin/comfyui-ltc-guide" target="_blank" rel="noopener noreferrer">Project GitHub<span class="sr-only">（另開新視窗）</span></a>
+      <a href="https://github.com/yazelin/comfyui-ltc-guide/issues" target="_blank" rel="noopener noreferrer">Project Issues<span class="sr-only">（另開新視窗）</span></a>
+    </div>
+  </footer>
 </body>
 </html>
