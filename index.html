@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyUI + LTX 2.3 完整教學 | AMD AI MAX+ 395</title>
+    <meta name="description" content="在 AMD Ryzen AI MAX+ 395 上使用 ComfyUI 和 LTX 2.3 生成 AI 影片的完整教學指南">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1>🎬 ComfyUI + LTX 2.3 教學</h1>
+            <ul class="nav-links">
+                <li><a href="#intro">介紹</a></li>
+                <li><a href="#requirements">硬體需求</a></li>
+                <li><a href="#install">安裝步驟</a></li>
+                <li><a href="#usage">使用教學</a></li>
+                <li><a href="#faq">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h2>在 AMD GPU 上生成 AI 影片</h2>
+            <p class="subtitle">使用 ComfyUI + LTX 2.3 在 Windows 本地執行，無需付費 API</p>
+            <div class="hero-badges">
+                <span class="badge">✅ Windows 支援</span>
+                <span class="badge">✅ AMD GPU</span>
+                <span class="badge">✅ 免費本地執行</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 介紹 -->
+        <section id="intro" class="section">
+            <h2>📖 關於本教學</h2>
+            <div class="card">
+                <p>本教學將帶你從零開始，在 <strong>AMD Ryzen AI MAX+ 395</strong> 上使用 <strong>ComfyUI</strong> 和 <strong>LTX 2.3</strong> 生成高品質 AI 影片。</p>
+                
+                <h3>為什麼選擇本地執行？</h3>
+                <ul class="feature-list">
+                    <li><strong>💰 節省成本</strong>：無需支付 API 費用（API 模式：$0.30/影片）</li>
+                    <li><strong>🔒 隱私保護</strong>：所有資料在本地處理</li>
+                    <li><strong>🎨 完全掌控</strong>：可調整所有生成參數</li>
+                    <li><strong>⚡ 無限次數</strong>：想生成多少次都可以</li>
+                </ul>
+
+                <h3>社群驗證成功</h3>
+                <div class="success-cases">
+                    <div class="case">
+                        <strong>AMD AI MAX+ 395</strong>
+                        <p>64GB RAM + ROCm 7.1.1<br>
+                        ✅ 生成速度：~3分鐘/5秒影片</p>
+                    </div>
+                    <div class="case">
+                        <strong>AMD 7800 XT</strong>
+                        <p>16GB VRAM + 64GB RAM<br>
+                        ✅ 穩定運行，社群驗證</p>
+                    </div>
+                    <div class="case">
+                        <strong>AMD Strix Halo</strong>
+                        <p>ROCm 7.9 + Ubuntu 24<br>
+                        ✅ 評價：「stable as a rock」</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 硬體需求 -->
+        <section id="requirements" class="section">
+            <h2>💻 硬體需求</h2>
+            
+            <div class="card requirements-card">
+                <h3>✅ 建議配置（AMD AI MAX+ 395）</h3>
+                <table class="specs-table">
+                    <tr>
+                        <th>項目</th>
+                        <th>規格</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td>CPU</td>
+                        <td>AMD Ryzen AI MAX+ 395</td>
+                        <td>16 Zen 5 核心</td>
+                    </tr>
+                    <tr>
+                        <td>GPU</td>
+                        <td>40 CU RDNA 3.5</td>
+                        <td>Radeon 8060S (integrated)</td>
+                    </tr>
+                    <tr>
+                        <td>記憶體</td>
+                        <td>128GB unified memory</td>
+                        <td>⚠️ 重要：設定 64GB/64GB (CPU/GPU)</td>
+                    </tr>
+                    <tr>
+                        <td>作業系統</td>
+                        <td>Windows 10/11</td>
+                        <td>推薦 Windows 11</td>
+                    </tr>
+                    <tr>
+                        <td>儲存空間</td>
+                        <td>至少 50GB 可用</td>
+                        <td>模型 + 依賴 + 輸出檔案</td>
+                    </tr>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ RAM 配置注意事項</h4>
+                    <p><strong>必須設定為 64GB/64GB (CPU/GPU 均分)</strong></p>
+                    <p>預設的 96GB/32GB 配置會導致 OOM (記憶體不足) 錯誤！</p>
+                    <p>設定位置：BIOS 或系統設定中的記憶體分配選項</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚡ 其他支援的 AMD GPU</h3>
+                <ul>
+                    <li><strong>AMD 7900 XTX</strong>：24GB VRAM，建議搭配 64GB+ 系統記憶體</li>
+                    <li><strong>AMD 7800 XT</strong>：16GB VRAM，已有社群成功案例</li>
+                    <li><strong>AMD Strix Halo 系列</strong>：ROCm 7.9 穩定支援</li>
+                </ul>
+                <p class="note">💡 更多 GPU 支援清單請參考 <a href="https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html" target="_blank">ROCm 官方文檔</a></p>
+            </div>
+        </section>
+
+        <!-- 安裝步驟 -->
+        <section id="install" class="section">
+            <h2>🛠️ 安裝步驟</h2>
+            
+            <div class="card">
+                <h3>步驟 1：安裝 AMD Adrenaline 驅動</h3>
+                <ol class="step-list">
+                    <li>前往 <a href="https://www.amd.com/en/resources/support-articles/release-notes/RN-AMDGPU-WINDOWS-PYTORCH-7-1-1.html" target="_blank">AMD 官方下載頁面</a></li>
+                    <li>下載最新版 Adrenaline 驅動程式</li>
+                    <li>執行安裝檔，完成安裝後<strong>重新啟動電腦</strong></li>
+                    <li>驗證安裝：開啟 AMD Software，確認 GPU 正確識別</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>步驟 2：安裝 Git</h3>
+                <p>如果已經安裝過 Git，可以跳過此步驟。</p>
+                <ol class="step-list">
+                    <li>前往 <a href="https://git-scm.com/install/" target="_blank">Git 官方網站</a></li>
+                    <li>下載 Windows 版本</li>
+                    <li>執行安裝（全部使用預設選項即可）</li>
+                    <li>驗證安裝：開啟命令提示字元，輸入 <code>git --version</code></li>
+                </ol>
+            </div>
+
+            <div class="card highlight-card">
+                <h3>步驟 3：安裝 ComfyUI Desktop（核心步驟）</h3>
+                <p class="info-box">✨ ComfyUI Desktop 會自動安裝 Python、ROCm 7.2.2、PyTorch 等所有依賴，無需手動配置！</p>
+                
+                <ol class="step-list">
+                    <li>
+                        <strong>下載 ComfyUI Desktop</strong>
+                        <p>前往 <a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank">ComfyUI 官方 Blog</a></p>
+                        <p>點擊下載連結，選擇 Windows 版本</p>
+                    </li>
+                    <li>
+                        <strong>執行安裝</strong>
+                        <p>雙擊下載的安裝檔</p>
+                        <p>按照安裝精靈指示完成（全部使用預設選項）</p>
+                    </li>
+                    <li>
+                        <strong>首次啟動</strong>
+                        <p>安裝完成後啟動 ComfyUI Desktop</p>
+                        <p>首次啟動會自動下載並配置：</p>
+                        <ul>
+                            <li>Python 環境</li>
+                            <li>ROCm 7.2.2（AMD GPU 支援）</li>
+                            <li>PyTorch ROCm 版本</li>
+                            <li>ComfyUI 核心及依賴</li>
+                        </ul>
+                        <p class="note">⏱️ 首次啟動可能需要 10-20 分鐘，請耐心等待</p>
+                    </li>
+                    <li>
+                        <strong>驗證安裝</strong>
+                        <p>成功啟動後，應該會看到 ComfyUI 的節點編輯器介面</p>
+                        <p>左下角應該顯示 AMD GPU 資訊</p>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>步驟 4：調整記憶體分配（AMD AI MAX+ 395 專用）</h3>
+                <div class="warning-box">
+                    <p><strong>⚠️ 這是最關鍵的步驟！</strong></p>
+                    <p>不設定會導致生成影片時 OOM（記憶體不足）錯誤</p>
+                </div>
+                
+                <ol class="step-list">
+                    <li>重新啟動電腦，進入 BIOS 設定（通常按 Delete 或 F2）</li>
+                    <li>找到記憶體分配設定（可能在 Advanced → Memory Configuration）</li>
+                    <li>將 CPU/GPU 記憶體比例設定為 <strong>64GB/64GB</strong></li>
+                    <li>儲存設定並重新啟動</li>
+                </ol>
+                
+                <p class="note">💡 如果在 BIOS 找不到此選項，請查閱主機板手冊或聯繫製造商</p>
+            </div>
+
+            <div class="card">
+                <h3>步驟 5：下載 LTX 2.3 模型</h3>
+                <p>ComfyUI Desktop 首次啟動時會提示下載模型，或者你可以手動下載：</p>
+                <ol class="step-list">
+                    <li>在 ComfyUI 介面中，點擊 <strong>Manager</strong> 或 <strong>Model Manager</strong></li>
+                    <li>搜尋 "LTX 2.3" 或 "LTX Video"</li>
+                    <li>點擊下載（檔案約 10-20GB，需要穩定網路）</li>
+                    <li>下載完成後，模型會自動安裝到正確位置</li>
+                </ol>
+                
+                <p class="note">⏱️ 下載時間視網路速度而定，通常需要 30-60 分鐘</p>
+            </div>
+        </section>
+
+        <!-- 使用教學 -->
+        <section id="usage" class="section">
+            <h2>🎨 使用教學</h2>
+            
+            <div class="card">
+                <h3>ComfyUI 介面簡介</h3>
+                <p>ComfyUI 使用<strong>節點式（Node-based）</strong>工作流程，不同於對話式 AI（如 ChatGPT）。</p>
+                
+                <div class="interface-intro">
+                    <h4>主要區域</h4>
+                    <ul>
+                        <li><strong>畫布區</strong>：中央大區域，用於放置和連接節點</li>
+                        <li><strong>節點列表</strong>：右鍵點擊畫布可呼叫，選擇要新增的節點</li>
+                        <li><strong>參數面板</strong>：點擊節點後顯示，可調整參數</li>
+                        <li><strong>Queue 按鈕</strong>：右上角，點擊後開始生成</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card highlight-card">
+                <h3>快速開始：使用預設 LTX Template</h3>
+                <p class="info-box">✨ 最簡單的方式是使用內建的 LTX 範本，無需從頭建立工作流程</p>
+                
+                <ol class="step-list">
+                    <li>
+                        <strong>載入範本</strong>
+                        <p>點擊上方選單：<strong>File → Load → Templates → LTX Video</strong></p>
+                        <p>或在 Manager 中搜尋 "LTX template"</p>
+                    </li>
+                    <li>
+                        <strong>找到 Text Prompt 節點</strong>
+                        <p>在畫布上找到標有 "Prompt" 或 "Text Input" 的節點</p>
+                        <p>點擊節點，在參數面板中輸入你的描述文字</p>
+                        <p class="example">範例：「一隻可愛的橘貓在陽光下打哈欠」</p>
+                    </li>
+                    <li>
+                        <strong>設定影片參數</strong>
+                        <p>找到 "Video Settings" 或類似節點，調整：</p>
+                        <ul>
+                            <li><strong>Duration（長度）</strong>：5 秒（推薦初次使用）</li>
+                            <li><strong>Resolution（解析度）</strong>：1920x1080 或 1920x1088</li>
+                            <li><strong>FPS（影格率）</strong>：24 或 30（預設即可）</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>開始生成</strong>
+                        <p>點擊右上角 <strong>Queue Prompt</strong> 按鈕</p>
+                        <p>觀察進度條，生成時間約 <strong>3-5 分鐘</strong></p>
+                    </li>
+                    <li>
+                        <strong>查看結果</strong>
+                        <p>生成完成後，影片會自動儲存到輸出資料夾</p>
+                        <p>預設路徑：<code>ComfyUI\output\</code></p>
+                        <p>或在介面右側的 "Output" 面板中預覽</p>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>進階：自訂工作流程</h3>
+                <p>如果想要更多控制，可以手動建立和調整節點：</p>
+                
+                <h4>常用節點說明</h4>
+                <table class="node-table">
+                    <tr>
+                        <th>節點名稱</th>
+                        <th>功能</th>
+                        <th>用途</th>
+                    </tr>
+                    <tr>
+                        <td>Load Checkpoint</td>
+                        <td>載入 LTX 模型</td>
+                        <td>必須節點，選擇 LTX 2.3 模型檔</td>
+                    </tr>
+                    <tr>
+                        <td>CLIP Text Encode</td>
+                        <td>文字編碼</td>
+                        <td>將 prompt 轉換為模型可理解的格式</td>
+                    </tr>
+                    <tr>
+                        <td>KSampler</td>
+                        <td>採樣器</td>
+                        <td>控制生成品質和隨機性</td>
+                    </tr>
+                    <tr>
+                        <td>VAE Decode</td>
+                        <td>解碼器</td>
+                        <td>將潛空間轉換為實際影片</td>
+                    </tr>
+                    <tr>
+                        <td>Save Video</td>
+                        <td>儲存輸出</td>
+                        <td>將生成的影片存檔</td>
+                    </tr>
+                </table>
+
+                <h4>節點連接原則</h4>
+                <ul>
+                    <li>拖曳節點的輸出點到另一個節點的輸入點</li>
+                    <li>顏色相同的連接點可以連接（黃色→黃色，紫色→紫色）</li>
+                    <li>工作流程必須從輸入（Checkpoint、Prompt）到輸出（Save）形成完整路徑</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>效能調整建議</h3>
+                
+                <h4>如果生成太慢：</h4>
+                <ul class="tips-list">
+                    <li>降低解析度（改為 1280x720）</li>
+                    <li>縮短影片長度（改為 3 秒）</li>
+                    <li>減少採樣步數（Steps 從 30 降到 20）</li>
+                </ul>
+
+                <h4>如果遇到 OOM 錯誤：</h4>
+                <ul class="tips-list">
+                    <li>確認 RAM 分配設定為 64GB/64GB</li>
+                    <li>關閉其他占用記憶體的程式</li>
+                    <li>降低解析度或影片長度</li>
+                </ul>
+
+                <h4>如果想要更高品質：</h4>
+                <ul class="tips-list">
+                    <li>增加採樣步數（Steps 提高到 40-50）</li>
+                    <li>調整 CFG Scale（推薦 7-9）</li>
+                    <li>使用更詳細的 prompt 描述</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 常見問題 -->
+        <section id="faq" class="section">
+            <h2>❓ 常見問題</h2>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3>Q: 安裝後啟動 ComfyUI 很慢，正常嗎？</h3>
+                    <p><strong>A:</strong> 正常。首次啟動需要載入模型和初始化 ROCm，可能需要 1-3 分鐘。之後啟動會快很多（約 30 秒）。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 生成影片時出現 "CUDA out of memory" 錯誤？</h3>
+                    <p><strong>A:</strong> 這是常見問題，解決方法：</p>
+                    <ol>
+                        <li>確認 RAM 分配設定為 64GB/64GB（不是 96GB/32GB）</li>
+                        <li>降低解析度或影片長度</li>
+                        <li>關閉其他占用記憶體的程式</li>
+                    </ol>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 生成速度比預期慢很多？</h3>
+                    <p><strong>A:</strong> AMD AI MAX+ 395 預期速度約 3-5 分鐘生成 5 秒影片。如果更慢：</p>
+                    <ul>
+                        <li>檢查是否有其他程式占用 GPU</li>
+                        <li>確認驅動程式已正確安裝</li>
+                        <li>查看工作管理員中 GPU 使用率是否正常</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: LTX 模型下載失敗或很慢？</h3>
+                    <p><strong>A:</strong> 模型檔案很大（10-20GB），建議：</p>
+                    <ul>
+                        <li>使用穩定的網路連線</li>
+                        <li>如果中斷，可以重新下載（通常支援斷點續傳）</li>
+                        <li>或從 <a href="https://huggingface.co/" target="_blank">HuggingFace</a> 手動下載後放到模型資料夾</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 可以生成比 5 秒更長的影片嗎？</h3>
+                    <p><strong>A:</strong> 可以，但：</p>
+                    <ul>
+                        <li>越長越耗時（10 秒約需 6-8 分鐘）</li>
+                        <li>越長越容易 OOM（建議不超過 10 秒）</li>
+                        <li>可以分段生成再用影片編輯軟體合併</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: Windows 和 Linux 哪個效能比較好？</h3>
+                    <p><strong>A:</strong> 效能差不多，但 Windows 設定更簡單（ComfyUI Desktop 一鍵安裝）。Linux 需要手動配置但更靈活。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 我的 AMD GPU 不是 AI MAX+ 395，能用嗎？</h3>
+                    <p><strong>A:</strong> 可以！已驗證支援的 GPU：</p>
+                    <ul>
+                        <li>AMD 7900 XTX（24GB VRAM）</li>
+                        <li>AMD 7800 XT（16GB VRAM）</li>
+                        <li>AMD Strix Halo 系列</li>
+                    </ul>
+                    <p>更多請參考 <a href="https://rocm.docs.amd.com/" target="_blank">ROCm 官方支援清單</a></p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 和用 API 相比，本地執行的優缺點？</h3>
+                    <p><strong>A:</strong></p>
+                    <table class="comparison-table">
+                        <tr>
+                            <th></th>
+                            <th>本地執行（ComfyUI）</th>
+                            <th>API 模式</th>
+                        </tr>
+                        <tr>
+                            <td>費用</td>
+                            <td>✅ 免費（僅硬體成本）</td>
+                            <td>$0.30/影片</td>
+                        </tr>
+                        <tr>
+                            <td>速度</td>
+                            <td>~3-5分鐘/5秒</td>
+                            <td>~2分鐘/5秒</td>
+                        </tr>
+                        <tr>
+                            <td>隱私</td>
+                            <td>✅ 完全本地</td>
+                            <td>上傳到雲端</td>
+                        </tr>
+                        <tr>
+                            <td>設定</td>
+                            <td>需要學習</td>
+                            <td>✅ 簡單（一行指令）</td>
+                        </tr>
+                        <tr>
+                            <td>彈性</td>
+                            <td>✅ 完全自訂</td>
+                            <td>固定參數</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 參考資源 -->
+        <section id="resources" class="section">
+            <h2>📚 參考資源</h2>
+            
+            <div class="card">
+                <h3>官方文檔</h3>
+                <ul class="resource-list">
+                    <li>
+                        <strong>ComfyUI Desktop 官方 Blog</strong><br>
+                        <a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank">https://blog.comfy.org/p/official-amd-rocm-support-arrives</a>
+                    </li>
+                    <li>
+                        <strong>AMD ROCm 官方教程</strong><br>
+                        <a href="https://rocm.docs.amd.com/projects/ai-developer-hub/en/latest/notebooks/inference/t2v_comfyui_radeon.html" target="_blank">https://rocm.docs.amd.com/.../t2v_comfyui_radeon.html</a>
+                    </li>
+                    <li>
+                        <strong>LTX 模型官方 GitHub</strong><br>
+                        <a href="https://github.com/Lightricks/LTX-2" target="_blank">https://github.com/Lightricks/LTX-2</a>
+                    </li>
+                </ul>
+
+                <h3>社群成功案例</h3>
+                <ul class="resource-list">
+                    <li>
+                        <strong>AMD AI MAX+ 395 成功報告</strong><br>
+                        <a href="https://www.reddit.com/r/ROCm/comments/1q6zmq1/" target="_blank">Reddit r/ROCm</a> (2026-01-08)
+                    </li>
+                    <li>
+                        <strong>AMD 7800 XT 運行案例</strong><br>
+                        <a href="https://www.reddit.com/r/StableDiffusion/comments/1q7emha/" target="_blank">Reddit r/StableDiffusion</a> (2026-01-08)
+                    </li>
+                    <li>
+                        <strong>AMD Strix Halo 穩定運行</strong><br>
+                        <a href="https://www.reddit.com/r/LocalLLaMA/comments/1qgc15w/" target="_blank">Reddit r/LocalLLaMA</a> (2026-01-18)
+                    </li>
+                </ul>
+
+                <h3>替代方案：CLI 工具</h3>
+                <p>如果你更喜歡命令列介面，可以使用 ltx-cli 工具（需要 API key）：</p>
+                <ul class="resource-list">
+                    <li>
+                        <strong>ltx-cli GitHub</strong><br>
+                        <a href="https://github.com/yazelin/ltx-cli" target="_blank">https://github.com/yazelin/ltx-cli</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>本教學由 <a href="https://github.com/yazelin" target="_blank">@yazelin</a> 製作 | 最後更新：2026-03-23</p>
+            <p>如有問題或建議，歡迎在 <a href="https://github.com/yazelin/comfyui-ltc-guide/issues" target="_blank">GitHub Issues</a> 提出</p>
+        </div>
+    </footer>
+</body>
+</html>
