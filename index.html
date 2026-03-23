@@ -2,55 +2,397 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ComfyUI + LTX 2.3 指南 | AMD AI MAX+ 395</title>
-  <meta name="description" content="AMD AI MAX+ 395 本地執行 ComfyUI + LTX 2.3 的精簡完整指南。">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ComfyUI + LTX 2.3 指南 v2 | AMD AI MAX+ 395</title>
+  <meta name="description" content="✅ AMD AI MAX+ 395 可以跑 LTX 2.3。30 秒看懂 4 步驟設定，3-5 分鐘生成第一支影片。">
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#f3f4f6; --border:#d1d5db; --accent:#15803d; --space-3:0.75rem; --space-4:1rem; --space-6:1.5rem; --space-8:2rem; --radius:0.5rem; --font:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif; }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:var(--font);background:var(--bg);color:var(--fg);line-height:1.6}
-    .container{width:min(100%,72rem);margin:0 auto;padding:0 var(--space-4)}
-    header{padding:var(--space-8) 0;border-bottom:1px solid var(--border)}
-    .hero-actions{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-6)}
-    .btn{display:inline-block;padding:0.7rem 1rem;border:1px solid #111;border-radius:var(--radius);text-decoration:none;color:#111;font-weight:700;transition:all .2s ease}
-    .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .btn:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body, h1, h2, h3, p, ul, ol, li, table, caption, thead, tbody, tr, th, td { margin: 0; padding: 0; }
+
+    /* Variables */
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-soft: #f9fafb;
+      --color-text: #0a0a0a;
+      --color-text-muted: #525252;
+      --color-border: #e5e5e5;
+      --color-success: #16a34a;
+      --color-success-dark: #15803d;
+      --color-success-light: #dcfce7;
+      --color-warning: #f59e0b;
+      --color-warning-light: #fef3c7;
+      --color-link: #2563eb;
+      --color-link-hover: #1e40af;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-12: 48px;
+      --space-16: 64px;
+
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      --text-4xl: 2.25rem;
+      --text-5xl: 3rem;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+      --container: 1040px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    }
+
+    /* Base */
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    a {
+      color: var(--color-link);
+      text-decoration: none;
+      transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--color-link-hover);
+      text-decoration: underline;
+    }
+
+    *:focus-visible {
+      outline: 2px solid var(--color-success);
+      outline-offset: 2px;
+    }
+
+    .container {
+      width: min(100% - 32px, var(--container));
+      margin-inline: auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus-visible {
+      left: var(--space-4);
+      top: var(--space-4);
+      width: auto;
+      height: auto;
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      z-index: 999;
+    }
+
+    .section { padding: var(--space-12) 0; }
+    .section + .section { border-top: 1px solid var(--color-border); }
+
+    h1 { font-size: clamp(2rem, 7vw, var(--text-5xl)); line-height: 1.15; letter-spacing: -0.01em; }
+    h2 { font-size: clamp(1.35rem, 4vw, var(--text-3xl)); line-height: 1.2; margin-bottom: var(--space-4); }
+    h3 { font-size: var(--text-lg); line-height: 1.3; }
+
+    .muted { color: var(--color-text-muted); }
+    .eyebrow { font-size: var(--text-sm); color: var(--color-success-dark); font-weight: 700; margin-bottom: var(--space-2); }
+
+    /* Hero */
+    .hero { padding: var(--space-16) 0 var(--space-12); }
+
+    .hero-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #fff 0%, #fcfffd 100%);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-8);
+      text-align: center;
+    }
+
+    .hero-sub {
+      margin-top: var(--space-4);
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+    }
+
+    .hero-facts {
+      margin-top: var(--space-6);
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid #cfe8d8;
+      border-radius: 999px;
+      background: var(--color-success-light);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: #0f5132;
+    }
+
+    .actions {
+      margin-top: var(--space-8);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-3);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      font-weight: 600;
+      text-decoration: none;
+      background: #fff;
+      color: var(--color-text);
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+
+    .btn-primary {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover { background: var(--color-success-dark); border-color: var(--color-success-dark); }
+
+    .btn-secondary:hover { background: var(--color-bg-soft); border-color: #bdbdbd; }
+
+    /* Card */
+    .card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card:hover { box-shadow: var(--shadow-md); }
+
+    /* Trust bar */
+    .trust-grid {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .trust-card p { margin-top: var(--space-2); font-size: var(--text-sm); }
+    .trust-card .source { display: inline-block; margin-top: var(--space-3); font-size: var(--text-sm); }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      min-width: 640px;
+    }
+
+    caption {
+      text-align: left;
+      font-weight: 700;
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-soft);
+    }
+
+    th, td {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+      font-size: var(--text-sm);
+    }
+
+    thead { background: var(--color-bg-soft); }
+    tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+
+    /* Warning */
+    .alert-warning {
+      margin-top: var(--space-6);
+      background: var(--color-warning-light);
+      border-left: 4px solid var(--color-warning);
+      padding: var(--space-4);
+      border-radius: 4px;
+      color: #78350f;
+    }
+
+    /* Steps */
+    .steps {
+      list-style: none;
+      display: grid;
+      gap: var(--space-4);
+      counter-reset: step;
+    }
+
+    .steps li {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: var(--space-5) var(--space-4) var(--space-4);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      top: var(--space-4);
+      left: var(--space-4);
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: var(--color-text);
+      color: #fff;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-base);
+      transform: translateY(-2px);
+    }
+
+    .steps h3 { padding-left: 44px; }
+    .steps p { margin-top: var(--space-2); color: var(--color-text-muted); }
+
+    /* Quick start */
+    .quick-list {
+      list-style: decimal;
+      padding-left: 1.2rem;
+      display: grid;
+      gap: var(--space-2);
+    }
+
+    .quick-list li { color: var(--color-text); }
+    .quick-list code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+      background: #f3f4f6;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 0 0.25em;
+    }
+
+    /* FAQ */
+    .faq-list { display: grid; gap: var(--space-2); }
+
+    details {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::before {
+      content: "▸";
+      display: inline-block;
+      transition: transform 0.2s ease;
+      color: var(--color-text-muted);
+    }
+
+    details[open] summary::before { transform: rotate(90deg); }
+    details p { padding: 0 var(--space-4) var(--space-4); color: var(--color-text-muted); }
+
+    /* Footer */
+    footer {
+      padding: var(--space-12) 0;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg-soft);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+    }
+
+    /* Desktop */
+    @media (min-width: 768px) {
+      .trust-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
   </style>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">跳至主要內容</a>
-  <header>
-    <div class="container hero">
-      <p class="eyebrow">LTX 2.3 本地影片生成指南</p>
-      <h1>✅ AMD AI MAX+ 395 可以跑 LTX 2.3</h1>
-      <p class="subtitle">以 ComfyUI Desktop + AMD ROCm 路線，快速完成在地部署、生成與成本控管。</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#install-steps">立即安裝</a>
-        <a class="btn" href="#quick-start">快速開始</a>
-      </div>
+  <a href="#main" class="skip-link">跳至主要內容</a>
+
+  <header class="hero" aria-labelledby="hero-title">
+    <div class="container">
+      <article class="hero-card">
+        <p class="eyebrow">ComfyUI + LTX 2.3 本地教學</p>
+        <h1 id="hero-title">✅ AMD AI MAX+ 395 可以跑 LTX 2.3</h1>
+        <p class="hero-sub">你可以先看結論，再照 4 步驟完成設定。</p>
+        <p class="hero-facts">社群驗證成功 · 非官方支援 · 3 分鐘生成 5 秒影片</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#install-steps">開始設定</a>
+          <a class="btn btn-secondary" href="#cost">或繼續用 API</a>
+        </div>
+      </article>
     </div>
   </header>
 
-  <main id="main-content">
-    <section class="section trust-bar" aria-labelledby="trust-title">
+  <main id="main">
+    <section class="section" aria-labelledby="trust-title">
       <div class="container">
         <h2 id="trust-title">社群成功案例</h2>
-        <div class="cards cards-3">
-          <article class="card success-card">
-            <h3>AI MAX+ 395 / 64GB-64GB</h3>
-            <p>可穩定生成 5 秒影片，實測約 3-5 分鐘。</p>
-            <a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener noreferrer">Reddit 來源<span class="sr-only">（另開新視窗）</span></a>
+        <div class="trust-grid">
+          <article class="card trust-card">
+            <h3>AI MAX+ 395</h3>
+            <p>64GB + ROCm 7.1.1<br>✅ 約 3 分鐘生成</p>
+            <a class="source" href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener noreferrer">Reddit 來源</a>
           </article>
-          <article class="card success-card">
+          <article class="card trust-card">
             <h3>Radeon 7800 XT</h3>
-            <p>ROCm 環境可跑 ComfyUI 工作流，適合桌機用戶。</p>
-            <a href="https://www.reddit.com/r/StableDiffusion/" target="_blank" rel="noopener noreferrer">Reddit 來源<span class="sr-only">（另開新視窗）</span></a>
+            <p>16GB + ROCm 7.1<br>✅ 穩定運行</p>
+            <a class="source" href="https://www.reddit.com/r/StableDiffusion/" target="_blank" rel="noopener noreferrer">Reddit 來源</a>
           </article>
-          <article class="card success-card">
-            <h3>Strix Halo / Ubuntu 24</h3>
-            <p>社群回報穩定，推論流程可長時間運行。</p>
-            <a href="https://www.reddit.com/r/Amd/" target="_blank" rel="noopener noreferrer">Reddit 來源<span class="sr-only">（另開新視窗）</span></a>
+          <article class="card trust-card">
+            <h3>Strix Halo</h3>
+            <p>Ubuntu 24 + ROCm 7.9<br>✅ stable as a rock</p>
+            <a class="source" href="https://www.reddit.com/r/Amd/" target="_blank" rel="noopener noreferrer">Reddit 來源</a>
           </article>
         </div>
       </div>
@@ -61,67 +403,73 @@
         <h2 id="hardware-title">硬體需求</h2>
         <div class="table-wrap">
           <table>
-            <caption>AMD AI MAX+ 395 建議硬體與系統配置</caption>
+            <caption>AMD AI MAX+ 395 執行 LTX 2.3 建議配置</caption>
             <thead>
               <tr>
                 <th scope="col">項目</th>
-                <th scope="col">需求</th>
-                <th scope="col">備註</th>
+                <th scope="col">規格</th>
+                <th scope="col">說明</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th scope="row">CPU</th>
                 <td>AMD Ryzen AI MAX+ 395</td>
-                <td>16 核心 Zen 5</td>
+                <td>16 Zen 5 核心</td>
               </tr>
               <tr>
                 <th scope="row">GPU</th>
-                <td>Radeon 8060S / ROCm 支援卡</td>
-                <td>建議更新至最新驅動</td>
+                <td>40 CU RDNA 3.5（Radeon 8060S）</td>
+                <td>搭配 ROCm 相容驅動</td>
               </tr>
               <tr>
                 <th scope="row">記憶體</th>
-                <td>128GB Unified Memory</td>
-                <td>必設 64GB/64GB</td>
+                <td>128GB unified</td>
+                <td>⚠️ BIOS 設為 64GB/64GB</td>
+              </tr>
+              <tr>
+                <th scope="row">作業系統</th>
+                <td>Windows 10/11</td>
+                <td>推薦 Windows 11</td>
               </tr>
               <tr>
                 <th scope="row">儲存空間</th>
                 <td>50GB+</td>
-                <td>模型與輸出影片</td>
+                <td>模型 + 依賴 + 輸出</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <aside class="alert">
-          <strong>RAM 警告：</strong> BIOS 若仍是 96GB/32GB，LTX 2.3 常見 OOM；請改為 <strong>64GB/64GB</strong>。
+        <aside class="alert-warning" role="alert">
+          <strong>⚠️ RAM 配置警告</strong><br>
+          你必須在 BIOS 設為 64GB/64GB（CPU/GPU 均分）。
+          預設 96GB/32GB 常導致 OOM 錯誤。
         </aside>
       </div>
     </section>
 
     <section class="section" id="install-steps" aria-labelledby="install-title">
       <div class="container">
-        <h2 id="install-title">4 步驟安裝（預估 25-40 分鐘）</h2>
+        <h2 id="install-title">如何設定（4 步驟）</h2>
         <ol class="steps">
-          <li class="card">
-            <h3>步驟 1：安裝 AMD 驅動（5-10 分）</h3>
-            <p>下載並安裝官方 Adrenaline / PyTorch 驅動套件，完成後重啟。</p>
-            <p><a href="https://www.amd.com/en/resources/support-articles/release-notes/RN-AMDGPU-WINDOWS-PYTORCH-7-1-1.html" target="_blank" rel="noopener noreferrer">AMD Driver 連結<span class="sr-only">（另開新視窗）</span></a></p>
+          <li>
+            <h3>安裝 AMD Adrenaline 驅動</h3>
+            <p>下載最新版驅動並安裝，完成後重啟。</p>
+            <p><a href="https://www.amd.com/en/resources/support-articles/release-notes/RN-AMDGPU-WINDOWS-PYTORCH-7-1-1.html" target="_blank" rel="noopener noreferrer">下載連結</a></p>
           </li>
-          <li class="card">
-            <h3>步驟 2：安裝 Git（3-5 分）</h3>
-            <p>若尚未安裝，先裝 Git 以便拉取工作流與工具。</p>
-            <p><a href="https://git-scm.com/install/" target="_blank" rel="noopener noreferrer">Git 安裝頁<span class="sr-only">（另開新視窗）</span></a></p>
+          <li>
+            <h3>安裝 Git（如已安裝可跳過）</h3>
+            <p>驗證：<code>git --version</code>。</p>
+            <p><a href="https://git-scm.com/install/" target="_blank" rel="noopener noreferrer">下載連結</a></p>
           </li>
-          <li class="card">
-            <h3>步驟 3：安裝 ComfyUI Desktop（10-20 分）</h3>
-            <p>依官方 AMD/ROCm 指引安裝，首次啟動需下載必要元件。</p>
-            <p><a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank" rel="noopener noreferrer">ComfyUI 官方 Blog<span class="sr-only">（另開新視窗）</span></a></p>
+          <li>
+            <h3>安裝 ComfyUI Desktop</h3>
+            <p>你可自動安裝 Python、ROCm、PyTorch，首次啟動約 10-20 分鐘。</p>
+            <p><a href="https://blog.comfy.org/p/official-amd-rocm-support-arrives" target="_blank" rel="noopener noreferrer">下載連結</a></p>
           </li>
-          <li class="card">
-            <h3>步驟 4：確認 ROCm 與記憶體配置（5 分）</h3>
-            <p>檢查 ROCm 文件對應與 BIOS 64GB/64GB 設定。</p>
-            <p><a href="https://rocm.docs.amd.com/" target="_blank" rel="noopener noreferrer">ROCm Docs<span class="sr-only">（另開新視窗）</span></a></p>
+          <li>
+            <h3>調整記憶體分配</h3>
+            <p>⚠️ 重啟進入 BIOS → Memory Configuration → 設為 64GB/64GB。</p>
           </li>
         </ol>
       </div>
@@ -129,74 +477,80 @@
 
     <section class="section" id="quick-start" aria-labelledby="quick-title">
       <div class="container">
-        <h2 id="quick-title">Quick Start Workflow</h2>
-        <div class="card workflow">
-          <ol>
-            <li>開啟 ComfyUI Desktop，載入 LTX 2.3 範本工作流。</li>
-            <li>填入 Prompt、長度（建議先 3-5 秒）、解析度（先 720p）。</li>
-            <li>按 Queue Prompt 執行，觀察 VRAM/RAM 使用情況。</li>
-            <li>輸出影片位於 ComfyUI output 目錄，確認結果後再逐步提高品質。</li>
+        <h2 id="quick-title">快速開始</h2>
+        <article class="card">
+          <ol class="quick-list">
+            <li>載入範本：File → Load → Templates → LTX Video。</li>
+            <li>輸入 Prompt：<code>一隻可愛的橘貓在陽光下打哈欠</code>。</li>
+            <li>設定參數：Duration <code>5 秒</code>，Resolution <code>1920x1080</code>。</li>
+            <li>開始生成：點 <strong>Queue Prompt</strong>，等待 3-5 分鐘。</li>
+            <li>查看結果：完成後在 <code>ComfyUI/output/</code> 查看。</li>
           </ol>
-        </div>
+        </article>
       </div>
     </section>
 
     <section class="section" id="faq" aria-labelledby="faq-title">
       <div class="container">
-        <h2 id="faq-title">FAQ</h2>
+        <h2 id="faq-title">常見問題</h2>
         <div class="faq-list">
-          <details class="card">
-            <summary>1) 首次啟動很慢，正常嗎？</summary>
-            <p>正常，首次會初始化環境與模型，後續啟動時間會明顯下降。</p>
+          <details>
+            <summary>首次啟動很慢，正常嗎？</summary>
+            <p>正常。首次會初始化環境與模型，後續啟動會明顯更快。</p>
           </details>
-          <details class="card">
-            <summary>2) OOM 要先檢查什麼？</summary>
-            <p>先確認 BIOS 為 64GB/64GB，再降低影片長度與解析度測試。</p>
+          <details>
+            <summary>出現 "CUDA out of memory" 錯誤？</summary>
+            <p>先確認 BIOS 是否為 64GB/64GB，再把秒數與解析度降一級重試。</p>
           </details>
-          <details class="card">
-            <summary>3) 非 AI MAX+ 395 也能用嗎？</summary>
-            <p>可，需確認你的 AMD GPU 在 ROCm 支援範圍內並使用對應驅動。</p>
+          <details>
+            <summary>生成速度比預期慢？</summary>
+            <p>先用 5 秒、720p 驗證流程。穩定後再提高到 1080p 或更長片段。</p>
           </details>
-          <details class="card">
-            <summary>4) 為何建議先 720p、3-5 秒？</summary>
-            <p>可先驗證流程與穩定性，再逐步提高品質，降低排錯成本。</p>
+          <details>
+            <summary>可以生成超過 5 秒的影片嗎？</summary>
+            <p>可以。建議逐步拉長秒數，避免一次拉太高導致 OOM。</p>
           </details>
-          <details class="card">
-            <summary>5) 還有 CLI 路線嗎？</summary>
-            <p>可以，參考 ltx-cli 專案做批次化或腳本化流程。</p>
+          <details>
+            <summary>我的 AMD GPU 不是 AI MAX+ 395，能用嗎？</summary>
+            <p>可以先嘗試，但你需確認 ROCm 相容性與驅動版本。</p>
           </details>
         </div>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="cost-title">
+    <section class="section" id="cost" aria-labelledby="cost-title">
       <div class="container">
-        <h2 id="cost-title">成本比較</h2>
+        <h2 id="cost-title">本地 vs API</h2>
         <div class="table-wrap">
           <table>
-            <caption>本地執行 vs API 成本對照（示意）</caption>
+            <caption>本地執行與 API 模式成本對比</caption>
             <thead>
               <tr>
                 <th scope="col">項目</th>
-                <th scope="col">本地（ComfyUI + LTX）</th>
-                <th scope="col">雲端 API</th>
+                <th scope="col">本地執行</th>
+                <th scope="col">API 模式</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">單次影片成本</th>
-                <td>約 $0（電費另計）</td>
-                <td>約 $0.30 / 5 秒</td>
+                <th scope="row">費用</th>
+                <td>✅ 免費（電費另計）</td>
+                <td>$0.30/影片</td>
               </tr>
               <tr>
-                <th scope="row">100 支影片</th>
-                <td>約 $0 + 電費</td>
-                <td>約 $30</td>
+                <th scope="row">速度</th>
+                <td>約 3-5 分鐘</td>
+                <td>✅ 約 2 分鐘</td>
               </tr>
               <tr>
-                <th scope="row">隱私與資料控制</th>
-                <td>全在地</td>
-                <td>依平台政策</td>
+                <th scope="row">隱私</th>
+                <td>✅ 完全本地</td>
+                <td>素材上傳雲端</td>
+              </tr>
+              <tr>
+                <th scope="row">設定</th>
+                <td>需要學習與設定</td>
+                <td>✅ 較簡單</td>
               </tr>
             </tbody>
           </table>
@@ -204,23 +558,29 @@
       </div>
     </section>
 
-    <section class="section final-cta" aria-labelledby="cta-title">
-      <div class="container card">
-        <h2 id="cta-title">準備好開始了嗎？</h2>
-        <p>先完成 4 步驟安裝，再用 Quick Start 工作流跑出第一支影片。</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#install-steps">開始部署</a>
-          <a class="btn" href="#faq">查看 FAQ</a>
-        </div>
+    <section class="section" aria-labelledby="cta-title">
+      <div class="container">
+        <article class="card" style="text-align:center;">
+          <h2 id="cta-title">準備開始了嗎？</h2>
+          <p class="muted">你可以先完成 4 步驟，再跑出第一支 5 秒影片。</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#install-steps">開始設定</a>
+            <a class="btn btn-secondary" href="#cost">繼續用 API</a>
+            <a class="btn btn-secondary" href="https://github.com/yazelin/comfyui-ltc-guide" target="_blank" rel="noopener noreferrer">查看原始碼</a>
+          </div>
+        </article>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="container footer-grid">
-      <a href="https://github.com/yazelin/ltx-cli" target="_blank" rel="noopener noreferrer">ltx-cli Repo<span class="sr-only">（另開新視窗）</span></a>
-      <a href="https://github.com/yazelin/comfyui-ltc-guide" target="_blank" rel="noopener noreferrer">Project GitHub<span class="sr-only">（另開新視窗）</span></a>
-      <a href="https://github.com/yazelin/comfyui-ltc-guide/issues" target="_blank" rel="noopener noreferrer">Project Issues<span class="sr-only">（另開新視窗）</span></a>
+    <div class="container">
+      <p class="muted">原始碼與追蹤：</p>
+      <div class="footer-links">
+        <a href="https://github.com/yazelin/comfyui-ltc-guide" target="_blank" rel="noopener noreferrer">Repo</a>
+        <a href="https://github.com/yazelin/comfyui-ltc-guide/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+        <a href="https://github.com/yazelin/ltx-cli" target="_blank" rel="noopener noreferrer">ltx-cli Repo</a>
+      </div>
     </div>
   </footer>
 </body>
